@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Environment & Secrets
+.env
+.venv/
+venv/
+
+# Data & Cache (regenerated at runtime)
+data_cache/
+trades.csv
+
+# IDE
+.vscode/
+.idea/
+
+# System / Binaries
+*.exe
+ngrok.exe
+desktop.ini
+
+# Unrelated app data
+Claude_pzs8sxrjxfjjc/
+runtime_status.json

@@ -1,0 +1,134 @@
+{
+  "best_params": {
+    "ema_fast": 9,
+    "ema_slow": 21,
+    "rsi_buy_max": 65,
+    "atr_sl_mult": 1.5,
+    "atr_tp_mult": 3.0
+  },
+  "train_metrics": {},
+  "test_metrics": {},
+  "last_optimized": "2026-04-07 00:26:19",
+  "filters": {
+    "min_profit_factor": 1.1,
+    "min_win_rate": 45,
+    "max_drawdown": 30,
+    "min_trades": 20
+  },
+  "history": [
+    {
+      "timestamp": "2026-04-06 17:54:15",
+      "params": {
+        "ema_fast": 5,
+        "ema_slow": 60,
+        "rsi_buy_max": 65,
+        "atr_sl_mult": 1.0,
+        "atr_tp_mult": 2.0
+      },
+      "train_metrics": {
+        "total_profit": 6346.88,
+        "win_rate": 100.0,
+        "profit_factor": 9999,
+        "max_drawdown": 0,
+        "sharpe": 61.81,
+        "num_trades": 3,
+        "score": 1.0
+      },
+      "test_metrics": {}
+    },
+    {
+      "timestamp": "2026-04-06 18:43:59",
+      "params": {
+        "ema_fast": 5,
+        "ema_slow": 60,
+        "rsi_buy_max": 65,
+        "atr_sl_mult": 1.0,
+        "atr_tp_mult": 2.0
+      },
+      "train_metrics": {
+        "total_profit": 6346.88,
+        "win_rate": 100.0,
+        "profit_factor": 9999,
+        "max_drawdown": 0,
+        "sharpe": 61.81,
+        "num_trades": 3,
+        "score": 1.0
+      },
+      "test_metrics": {}
+    },
+    {
+      "timestamp": "2026-04-06 20:05:48",
+      "params": {
+        "ema_fast": 5,
+        "ema_slow": 60,
+        "rsi_buy_max": 65,
+        "atr_sl_mult": 1.0,
+        "atr_tp_mult": 2.0
+      },
+      "train_metrics": {
+        "total_profit": 6346.88,
+        "win_rate": 100.0,
+        "profit_factor": 9999,
+        "max_drawdown": 0,
+        "sharpe": 61.81,
+        "num_trades": 3,
+        "score": 1.0
+      },
+      "test_metrics": {}
+    },
+    {
+      "timestamp": "2026-04-06 23:04:31",
+      "params": {
+        "ema_fast": 5,
+        "ema_slow": 21,
+        "rsi_buy_max": 65,
+        "atr_sl_mult": 1.0,
+        "atr_tp_mult": 2.0
+      },
+      "train_metrics": {
+        "total_profit": 6163.8,
+        "win_rate": 100.0,
+        "profit_factor": 9999,
+        "max_drawdown": 0,
+        "sharpe": 65.07,
+        "num_trades": 3,
+        "score": 1.0
+      },
+      "test_metrics": {}
+    },
+    {
+      "timestamp": "2026-04-07 00:26:19",
+      "params": {
+        "ema_fast": 9,
+        "ema_slow": 21,
+        "rsi_buy_max": 65,
+        "atr_sl_mult": 1.5,
+        "atr_tp_mult": 3.0
+      },
+      "train_metrics": {},
+      "test_metrics": {},
+      "validation": {
+        "reason": "no_valid_combo"
+      }
+    }
+  ],
+  "validation": {
+    "reason": "no_valid_combo"
+  },
+  "runtime": {
+    "risk_profile": "Balanced",
+    "exchange_mode": "demo",
+    "fail_safe_mode": "A_hard_stop",
+    "risk_per_trade_pct": 0.005,
+    "fee_bps": 5.0,
+    "slippage_bps": 3.0,
+    "max_daily_loss_usd": 50.0,
+    "cooldown_minutes": 30,
+    "max_consecutive_losses": 4,
+    "max_open_positions": 2,
+    "max_mock_orders_streak": 3,
+    "retry_attempts": 5,
+    "retry_interval_sec": 15,
+    "cooldown_after_stop_min": 30
+  }
+}

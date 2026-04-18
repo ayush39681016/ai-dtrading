@@ -1,6 +1,9 @@
-streamlit
+flask
+gunicorn
 pandas
 numpy
 matplotlib
 requests
 python-dotenv
+markdown
+reportlab

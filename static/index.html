@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMATS · AI Multi-Asset Trading System</title>
+    <meta name="description" content="Algorithmic trading across BTC, Gold, Silver — powered by EMA confluence, RSI filters, and ATR-based risk management.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Floating Particles Canvas -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Scrolling Price Ticker -->
+    <div class="ticker-bar" id="ticker-bar">
+        <div class="ticker-track">
+            <span class="ticker-item">BTC/USDT <strong>$75,980.00</strong> <span class="ticker-up">▲ 0.55%</span></span>
+            <span class="ticker-item">PAXG/USD <strong>$4,799.37</strong> <span class="ticker-up">▲ 0.25%</span></span>
+            <span class="ticker-item">AGLD/USD <strong>$0.2789</strong> <span class="ticker-down">▼ 0.79%</span></span>
+            <span class="ticker-item">BTC/USDT <strong>$75,980.00</strong> <span class="ticker-up">▲ 0.55%</span></span>
+            <span class="ticker-item">PAXG/USD <strong>$4,799.37</strong> <span class="ticker-up">▲ 0.25%</span></span>
+            <span class="ticker-item">AGLD/USD <strong>$0.2789</strong> <span class="ticker-down">▼ 0.79%</span></span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="logo-box">A</div>
+                <span class="brand-name">AMATS</span>
+                <span class="brand-sub">/ ai-multi-asset-trading</span>
+            </div>
+            <div class="nav-links" id="nav-links">
+                <a href="#dashboard" class="nav-link active">Dashboard</a>
+                <a href="#strategy" class="nav-link">Strategy</a>
+                <a href="#backtest" class="nav-link">Backtest</a>
+                <a href="#roadmap" class="nav-link">Roadmap</a>
+                <a href="#about" class="nav-link">About</a>
+            </div>
+            <a href="https://github.com/ayush39681016/ai-dtrading" target="_blank" class="btn-github">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                GitHub
+            </a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-header">
+            <div class="nav-brand">
+                <div class="logo-box">A</div>
+                <span class="brand-name">AMATS</span>
+            </div>
+            <button class="mobile-close" id="mobile-close" aria-label="Close menu">✕</button>
+        </div>
+        <a href="#dashboard" class="mobile-link">Dashboard</a>
+        <a href="#strategy" class="mobile-link">Strategy</a>
+        <a href="#backtest" class="mobile-link">Backtest</a>
+        <a href="#roadmap" class="mobile-link">Roadmap</a>
+        <a href="#about" class="mobile-link">About</a>
+        <a href="https://github.com/ayush39681016/ai-dtrading" target="_blank" class="mobile-link github-link">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+            GitHub
+        </a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-grid-bg"></div>
+        <div class="hero-content reveal-3d">
+            <div class="hero-badge">
+                <span class="badge-icon">⚡</span>
+                TESTNET · PAPER TRADING · LIVE FEED
+            </div>
+            <h1 class="hero-title">
+                AI <span class="text-accent">Multi-Asset</span><br>Trading System
+            </h1>
+            <p class="hero-subtitle">
+                Algorithmic trading across <strong>BTC</strong> · <strong>Gold</strong> · <strong>Silver</strong> — powered
+                by EMA confluence, RSI filters, and ATR-based risk management.
+            </p>
+            <div class="hero-buttons">
+                <a href="#dashboard" class="btn-primary">View Live Dashboard <span class="btn-arrow">↗</span></a>
+                <a href="https://github.com/ayush39681016/ai-dtrading" target="_blank" class="btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                    GitHub <span class="btn-arrow">↗</span>
+                </a>
+            </div>
+        </div>
+        <div class="hero-stats reveal-3d">
+            <div class="stat-item tilt-card">
+                <div class="stat-value" data-count="3">0</div>
+                <div class="stat-label">ASSETS TRADED</div>
+            </div>
+            <div class="stat-item tilt-card">
+                <div class="stat-value" data-count="945">0</div>
+                <div class="stat-label">BACKTESTS TESTED</div>
+            </div>
+            <div class="stat-item tilt-card">
+                <div class="stat-value" data-count="10">0</div>
+                <div class="stat-label">INDICATORS USED</div>
+            </div>
+            <div class="stat-item tilt-card">
+                <div class="stat-value" data-count="24">0</div>
+                <div class="stat-label">HOURS / 7 DAYS</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Dashboard Section -->
+    <section class="section" id="dashboard">
+        <div class="container">
+            <div class="section-header reveal-3d">
+                <h2 class="section-heading">Live System Dashboard <span class="live-badge"><span class="live-dot"></span> LIVE</span></h2>
+                <p class="section-desc">Bybit V5 REST · prices refresh every 10s · account every 20s</p>
+                <span class="section-tag">mainnet: api.bybit.com</span>
+            </div>
+
+            <!-- Price Cards -->
+            <div class="price-cards reveal-3d">
+                <div class="price-card tilt-card" id="price-btc">
+                    <div class="price-card-header">
+                        <span class="price-symbol">—</span>
+                        <span class="price-status-dot online"></span>
+                    </div>
+                    <div class="price-label">LOADING</div>
+                    <div class="price-value">$0</div>
+                    <div class="price-change up">▲ 0.00% <span>24h</span></div>
+                    <div class="sparkline-bar"><div class="sparkline-fill" style="width:70%"><span class="sparkline-dot"></span></div></div>
+                </div>
+                <div class="price-card tilt-card" id="price-gold">
+                    <div class="price-card-header">
+                        <span class="price-symbol">—</span>
+                        <span class="price-status-dot online"></span>
+                    </div>
+                    <div class="price-label">LOADING</div>
+                    <div class="price-value">$0</div>
+                    <div class="price-change up">▲ 0.00% <span>24h</span></div>
+                    <div class="sparkline-bar"><div class="sparkline-fill" style="width:55%"></div></div>
+                </div>
+                <div class="price-card tilt-card" id="price-silver">
+                    <div class="price-card-header">
+                        <span class="price-symbol">—</span>
+                        <span class="price-status-dot online"></span>
+                    </div>
+                    <div class="price-label">LOADING</div>
+                    <div class="price-value">$0</div>
+                    <div class="price-change up">▲ 0.00% <span>24h</span></div>
+                    <div class="sparkline-bar"><div class="sparkline-fill" style="width:40%"></div></div>
+                </div>
+            </div>
+
+            <!-- Account & Positions -->
+            <div class="dashboard-grid reveal-3d">
+                <div class="panel account-panel tilt-card">
+                    <div class="panel-header">
+                        <span>📋 Account Balance</span>
+                        <span class="badge-outline">NO KEY</span>
+                    </div>
+                    <div class="account-placeholder">
+                        <div class="key-icon">🔑</div>
+                        <h3>Connect API Key</h3>
+                        <p>Set <span class="text-accent">BYBIT_API_KEY</span> and <span class="text-accent">BYBIT_API_SECRET</span> in <code>/app/backend/.env</code> to enable balance & positions.</p>
+                        <p class="text-muted">Secrets stay server-side — never exposed to browser.</p>
+                    </div>
+                </div>
+                <div class="panel positions-panel tilt-card">
+                    <div class="panel-header">
+                        <span>⚡ Open Positions</span>
+                        <span class="text-muted">offline</span>
+                    </div>
+                    <table class="positions-table">
+                        <thead>
+                            <tr>
+                                <th>SYMBOL</th>
+                                <th>SIDE</th>
+                                <th>SIZE</th>
+                                <th>ENTRY</th>
+                                <th>MARK</th>
+                                <th>UPNL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="positions-body">
+                            <tr><td colspan="6" class="empty-msg">Connect an API key to view positions</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Equity Curve & Recent Trades -->
+            <div class="equity-trades-grid reveal-3d">
+                <div class="panel equity-panel tilt-card">
+                    <div class="panel-header">
+                        <span>📈 Equity Curve</span>
+                        <span class="badge-warning">⚠ TESTNET PAPER TRADING DATA</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="equity-chart"></canvas>
+                    </div>
+                </div>
+                <div class="panel trades-panel">
+                    <div class="panel-header">
+                        <span>Recent Trades</span>
+                        <span class="text-muted">last 8</span>
+                    </div>
+                    <div class="trades-list" id="trades-list">
+                        <div class="trade-item">
+                            <div class="trade-info">
+                                <span class="trade-symbol">BTCUSDT</span>
+                                <span class="trade-side long">LONG</span>
+                            </div>
+                            <div class="trade-details">
+                                <span class="trade-date">2026-01-08 14:22 · v2.3</span>
+                            </div>
+                            <div class="trade-values">
+                                <span class="trade-price">$94,120.5</span>
+                                <span class="trade-pnl positive">+142.38</span>
+                            </div>
+                        </div>
+                        <div class="trade-item">
+                            <div class="trade-info">
+                                <span class="trade-symbol">XAUTUSDT</span>
+                                <span class="trade-side long">LONG</span>
+                            </div>
+                            <div class="trade-details">
+                                <span class="trade-date">2026-01-08 11:05 · v2.3</span>
+                            </div>
+                            <div class="trade-values">
+                                <span class="trade-price">$2,714.2</span>
+                                <span class="trade-pnl positive">+38.05</span>
+                            </div>
+                        </div>
+                        <div class="trade-item">
+                            <div class="trade-info">
+                                <span class="trade-symbol">AGLDUSDT</span>
+                                <span class="trade-side long">LONG</span>
+                            </div>
+                            <div class="trade-details">
+                                <span class="trade-date">2026-01-07 22:41 · v2.3</span>
+                            </div>
+                            <div class="trade-values">
+                                <span class="trade-price">$1.842</span>
+                                <span class="trade-pnl negative">-12.60</span>
+                            </div>
+                        </div>
+                        <div class="trade-item">
+                            <div class="trade-info">
+                                <span class="trade-symbol">BTCUSDT</span>
+                                <span class="trade-side long">LONG</span>
+                            </div>
+                            <div class="trade-details">
+                                <span class="trade-date">2026-01-07 17:13 · v2.3</span>
+                            </div>
+                            <div class="trade-values">
+                                <span class="trade-price">$93,580</span>
+                                <span class="trade-pnl positive">+276.44</span>
+                            </div>
+                        </div>
+                        <div class="trade-item">
+                            <div class="trade-info">
+                                <span class="trade-symbol">XAUTUSDT</span>
+                                <span class="trade-side long">LONG</span>
+                            </div>
+                            <div class="trade-details">
+                                <span class="trade-date">2026-01-07 09:58 · v2.2</span>
+                            </div>
+                            <div class="trade-values">
+                                <span class="trade-price">$2,702.88</span>
+                                <span class="trade-pnl positive">+54.19</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Strategy Section -->
+    <section class="section section-strategy" id="strategy">
+        <div class="container">
+            <div class="section-label reveal-3d">/ STRATEGY</div>
+            <h2 class="section-title reveal-3d">How The Strategy Works</h2>
+            <p class="section-subtitle reveal-3d">Confluence-based trend-following with volume + volatility filters. Every trade is gated by four independent checks.</p>
+
+            <div class="steps-grid reveal-3d">
+                <div class="step-card tilt-card">
+                    <div class="step-header">
+                        <span class="step-num">STEP 01</span>
+                        <span class="step-icon">📊</span>
+                    </div>
+                    <h3>Data Feed</h3>
+                    <p class="step-desc">Bybit Mainnet · 5-min candles</p>
+                    <ul class="step-list">
+                        <li>500 candles per asset</li>
+                        <li>BTC perp · XAUT spot · AGLD spot</li>
+                    </ul>
+                    <div class="step-arrow">›</div>
+                </div>
+                <div class="step-card tilt-card">
+                    <div class="step-header">
+                        <span class="step-num">STEP 02</span>
+                        <span class="step-icon">📈</span>
+                    </div>
+                    <h3>Indicators</h3>
+                    <p class="step-desc">Computed in real time</p>
+                    <ul class="step-list">
+                        <li>EMA (fast / slow)</li>
+                        <li>RSI (14)</li>
+                        <li>ATR (14)</li>
+                        <li>Volume MA (20)</li>
+                        <li>EMA (200) trend filter</li>
+                    </ul>
+                    <div class="step-arrow">›</div>
+                </div>
+                <div class="step-card tilt-card">
+                    <div class="step-header">
+                        <span class="step-num">STEP 03</span>
+                        <span class="step-icon">⚙️</span>
+                    </div>
+                    <h3>Signal Engine</h3>
+                    <p class="step-desc">All 4 conditions must be TRUE</p>
+                    <ul class="step-list">
+                        <li>EMA fast > EMA slow (crossover)</li>
+                        <li>RSI(14) < 65 (not overbought)</li>
+                        <li>Volume > 20-period Volume MA</li>
+                        <li>Price > EMA(200) (uptrend only)</li>
+                    </ul>
+                    <div class="step-arrow">›</div>
+                </div>
+                <div class="step-card tilt-card">
+                    <div class="step-header">
+                        <span class="step-num">STEP 04</span>
+                        <span class="step-icon">🎯</span>
+                    </div>
+                    <h3>Execution</h3>
+                    <p class="step-desc">Bybit Testnet · market orders</p>
+                    <ul class="step-list">
+                        <li>Stop Loss = Entry - 1.5 × ATR</li>
+                        <li>Take Profit = Entry + 3.0 × ATR</li>
+                    </ul>
+                    <div class="step-arrow">›</div>
+                </div>
+                <div class="step-card tilt-card">
+                    <div class="step-header">
+                        <span class="step-num">STEP 05</span>
+                        <span class="step-icon">🔄</span>
+                    </div>
+                    <h3>Auto-Optimizer</h3>
+                    <p class="step-desc">Triggers every 20 trades</p>
+                    <ul class="step-list">
+                        <li>Grid search across parameter space</li>
+                        <li>70/30 train/test split</li>
+                        <li>Prevents overfitting</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Candlestick Illustration -->
+            <div class="chart-illustration reveal-3d tilt-card">
+                <div class="chart-ill-header">
+                    <div>
+                        <h3>Sample Setup — BTCUSDT 5m</h3>
+                        <p class="text-muted">EMA crossover + volume expansion · entry above EMA(200)</p>
+                    </div>
+                    <span class="text-muted">illustrative</span>
+                </div>
+                <div class="chart-legend">
+                    <span><span class="legend-dot blue"></span> EMA fast</span>
+                    <span><span class="legend-dot orange"></span> EMA slow</span>
+                </div>
+                <div class="candlestick-area">
+                    <canvas id="candlestick-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Backtest Section -->
+    <section class="section section-backtest" id="backtest">
+        <div class="container">
+            <div class="section-label reveal-3d">/ BACKTEST</div>
+            <h2 class="section-title reveal-3d">Backtest Performance</h2>
+            <p class="section-subtitle reveal-3d">Historical performance · 5-min candles · 2024–2025 sample window</p>
+
+            <div class="backtest-header reveal-3d">
+                <div></div>
+                <div class="asset-toggles">
+                    <button class="asset-toggle active" data-asset="btc">BTC</button>
+                    <button class="asset-toggle" data-asset="gold">GOLD</button>
+                    <button class="asset-toggle" data-asset="silver">SILVER</button>
+                </div>
+            </div>
+
+            <div class="backtest-metrics reveal-3d">
+                <div class="metric-card tilt-card">
+                    <div class="metric-label">TOTAL RETURN</div>
+                    <div class="metric-value text-green" id="bt-return">+34.8%</div>
+                </div>
+                <div class="metric-card tilt-card">
+                    <div class="metric-label">WIN RATE</div>
+                    <div class="metric-value" id="bt-winrate">58.2%</div>
+                </div>
+                <div class="metric-card tilt-card">
+                    <div class="metric-label">PROFIT FACTOR</div>
+                    <div class="metric-value" id="bt-pf">1.92</div>
+                </div>
+                <div class="metric-card tilt-card">
+                    <div class="metric-label">MAX DRAWDOWN</div>
+                    <div class="metric-value text-red" id="bt-dd">-11.4%</div>
+                </div>
+                <div class="metric-card tilt-card">
+                    <div class="metric-label">TOTAL TRADES</div>
+                    <div class="metric-value" id="bt-trades">317</div>
+                </div>
+                <div class="metric-card tilt-card">
+                    <div class="metric-label">SHARPE RATIO</div>
+                    <div class="metric-value text-green" id="bt-sharpe">1.64</div>
+                </div>
+            </div>
+
+            <div class="panel backtest-chart-panel reveal-3d tilt-card">
+                <div class="panel-header">
+                    <div>
+                        <h3 id="bt-chart-title">Bitcoin Perpetual · Equity Curve</h3>
+                        <p class="text-muted" id="bt-chart-sub">BTCUSDT</p>
+                    </div>
+                    <span class="text-muted">$10,000 starting capital</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="backtest-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap Section -->
+    <section class="section section-roadmap" id="roadmap">
+        <div class="container">
+            <div class="section-label reveal-3d">/ ROADMAP</div>
+            <h2 class="section-title reveal-3d">Strategic Roadmap</h2>
+            <p class="section-subtitle reveal-3d">From edge-sharpening to fully autonomous production deployment.</p>
+
+            <div class="roadmap-accordion reveal-3d tilt-card">
+                <div class="accordion-header">
+                    <span class="accordion-badge">✓ 10 / 10</span>
+                    <span class="accordion-title">Development History</span>
+                    <span class="text-muted">— phases completed</span>
+                    <span class="accordion-arrow">›</span>
+                </div>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item left reveal-3d">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card tilt-card">
+                        <div class="timeline-phase">
+                            <span>PHASE 01</span>
+                            <span class="badge-progress">IN PROGRESS</span>
+                        </div>
+                        <h3>Improve Core Edge</h3>
+                        <ul>
+                            <li>Funding Rate filter</li>
+                            <li>Open Interest spikes</li>
+                            <li>Cross-exchange spread monitoring</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item right reveal-3d">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card tilt-card">
+                        <div class="timeline-phase">
+                            <span>PHASE 02</span>
+                            <span class="badge-planned">PLANNED</span>
+                        </div>
+                        <h3>Institutional-Grade Signals</h3>
+                        <ul>
+                            <li>Funding Rate filter</li>
+                            <li>Open Interest spikes</li>
+                            <li>Cross-exchange spread monitoring</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item left reveal-3d">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card tilt-card">
+                        <div class="timeline-phase">
+                            <span>PHASE 03</span>
+                            <span class="badge-planned">PLANNED</span>
+                        </div>
+                        <h3>Portfolio Risk Management</h3>
+                        <ul>
+                            <li>Daily loss limit (-2% circuit breaker)</li>
+                            <li>Correlation monitor across assets</li>
+                            <li>Trailing stop loss + partial profit taking</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item right reveal-3d">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card tilt-card">
+                        <div class="timeline-phase">
+                            <span>PHASE 04</span>
+                            <span class="badge-planned">PLANNED</span>
+                        </div>
+                        <h3>Proper Backtesting</h3>
+                        <ul>
+                            <li>Slippage modelling</li>
+                            <li>Realistic fee structures</li>
+                            <li>Monte Carlo simulations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About / Footer -->
+    <section class="section section-about" id="about">
+        <div class="container">
+            <div class="footer-content reveal-3d">
+                <div class="footer-brand">
+                    <div class="logo-box large">A</div>
+                    <h3>AMATS</h3>
+                    <p class="text-muted">AI Multi-Asset Trading System</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-col">
+                        <h4>Navigation</h4>
+                        <a href="#dashboard">Dashboard</a>
+                        <a href="#strategy">Strategy</a>
+                        <a href="#backtest">Backtest</a>
+                        <a href="#roadmap">Roadmap</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Resources</h4>
+                        <a href="https://github.com/ayush39681016/ai-dtrading" target="_blank">GitHub</a>
+                        <a href="#">Documentation</a>
+                        <a href="#">API Reference</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Trading</h4>
+                        <a href="#">BTC Strategy</a>
+                        <a href="#">Gold Strategy</a>
+                        <a href="#">Silver Strategy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span class="text-muted">© 2024–2025 AMATS. All rights reserved.</span>
+                <span class="text-muted">Built for algorithmic trading research.</span>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>

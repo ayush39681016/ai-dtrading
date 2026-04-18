@@ -146,3 +146,132 @@ Your current system has a decent structure but is running the most basic strateg
 These two additions would transform your system from "retail hobby bot" to "semi-professional trading system" and cost you zero money — just code changes.
 
 Would you like me to implement any of these phases right now?
+
+---
+
+## Research-Backed Roadmap v2 (2026)
+
+This section is append-only and does not change prior completed sections.
+
+### Phase A — Signal Quality Upgrades (Regime + Flow-Aware)
+
+1. Add market regime classifier (trend/range/high-vol/crash) using ADX + ATR percentile + realized volatility.
+2. Add derivatives flow filters:
+   - funding-rate extreme filter (avoid crowded side)
+   - open-interest expansion + price direction confirmation
+3. Add session/liquidity filter (skip weak-liquidity windows unless volatility setup is strong).
+
+**Why this matters**
+- Improves signal selectivity and reduces whipsaw entries in non-trending conditions.
+
+**Acceptance KPI**
+- Reduce false-entry rate by >= 20% vs current baseline over 60+ days paper data.
+- Keep or improve profit factor after transaction costs.
+
+### Phase B — Execution and Slippage Controls
+
+1. Add execution policy layer:
+   - IOC market for urgent exits
+   - optional passive/limit entry for lower slippage windows
+2. Add slippage budget:
+   - reject/resize entries when expected slippage > threshold.
+3. Add exchange health gate:
+   - require `check_connection().can_trade == true` before execution.
+4. Persist execution-quality metrics per trade:
+   - expected vs realized entry/exit price,
+   - fill latency,
+   - fee paid.
+
+**Why this matters**
+- Strategy edge is often lost at execution; controlling implementation shortfall is critical.
+
+**Acceptance KPI**
+- Keep realized slippage within configured budget in >= 90% of trades.
+- Track and report execution-quality metrics for 100% of closed trades.
+
+### Phase C — Portfolio Risk and Kill-Switch Policy
+
+1. Add portfolio-level risk limits:
+   - max daily loss,
+   - max open positions,
+   - correlated exposure cap (BTC/XAU/XAG dynamic correlation threshold).
+2. Add adaptive risk sizing:
+   - scale risk-per-trade down when rolling drawdown rises.
+3. Keep fail-safe modes (A/B/C) and test each weekly:
+   - A hard stop,
+   - B paper fallback,
+   - C retry-then-stop.
+4. Add explicit incident states:
+   - `degraded`, `blocked_auth`, `blocked_latency`, `blocked_risk`.
+
+**Why this matters**
+- Portfolio survival and stable drawdown control dominate long-term strategy viability.
+
+**Acceptance KPI**
+- Max intraday drawdown breach events: 0 in paper cycle.
+- Fail-safe mode behavior deterministic and logged for every trigger.
+
+### Phase D — Validation Standards and Anti-Overfitting
+
+1. Enforce walk-forward optimization as default:
+   - rolling train/test windows,
+   - no single split approvals.
+2. Add robustness testing:
+   - parameter stability checks,
+   - reality-check style model comparison to combat data snooping.
+3. Add baseline benchmarks:
+   - buy-and-hold,
+   - naive momentum,
+   - random-timed entry control.
+4. Add minimum sample requirements before promotion:
+   - min trades per asset,
+   - min out-of-sample window count.
+
+**Why this matters**
+- Prevents false confidence from overfit backtests and unstable parameter sets.
+
+**Acceptance KPI**
+- Strategy must beat benchmark set after fees/slippage in >= 70% of walk-forward windows.
+- Parameter set passes stability threshold across assets/time slices.
+
+### Phase E — Deployment, Monitoring, and SLOs
+
+1. Define production SLOs:
+   - uptime target,
+   - order ack latency target,
+   - stale-signal tolerance.
+2. Extend local monitor to operational dashboard:
+   - state timeline,
+   - alert reasons,
+   - fail-safe transitions,
+   - connectivity and order reject analytics.
+3. Add alerting:
+   - Telegram/Slack for entry/exit, kill-switch, auth failures, stale data.
+4. Add weekly review report:
+   - pnl decomposition (signal vs execution),
+   - top failure reasons,
+   - mode A/B/C comparison summary.
+
+**Why this matters**
+- Most live failures are operational, not purely model-related.
+
+**Acceptance KPI**
+- Alert coverage for 100% critical incidents.
+- Weekly report generated automatically with no manual edits.
+
+### Source Index
+
+**Exchange and market microstructure APIs**
+- Bybit funding history: [docs](https://bybit-exchange.github.io/docs/v5/market/history-fund-rate)
+- Bybit open interest: [docs](https://bybit-exchange.github.io/docs/v5/market/open-interest)
+- Binance USD-M funding rate history: [docs](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Get-Funding-Rate-History)
+
+**Validation and robustness**
+- QuantConnect walk-forward optimization guidance: [docs](https://www.quantconnect.com/docs/v2/writing-algorithms/optimization/walk-forward-optimization)
+- Walk-forward implementation overview (QuantInsti): [article](https://blog.quantinsti.com/walk-forward-optimization-introduction/)
+- White (2000), data-snooping reality check: [paper](https://www.ssc.wisc.edu/~bhansen/718/White2000.pdf)
+
+**Production frameworks and reference architectures**
+- VectorBT (research-scale vectorized backtesting): [GitHub](https://github.com/polakowo/vectorbt)
+- Freqtrade (production crypto bot with protections): [GitHub](https://github.com/freqtrade/freqtrade)
+- QuantConnect LEAN (event-driven research/live engine): [GitHub](https://github.com/QuantConnect/Lean)

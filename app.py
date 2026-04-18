@@ -257,29 +257,27 @@ def api_config():
     })
 
 
+# ─── Background Services ───
+import threading
+import os 
+from strategy_engine import main as strategy_main
+from auto_push import main as auto_push_main
+
+# Only start background threads if we are the main worker process (prevents duplicate execution in gunicorn)
+if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or "gunicorn" in os.environ.get("SERVER_SOFTWARE", "") or not os.environ.get("SERVER_SOFTWARE"):
+    print(">>> Starting Background Engines...", flush=True)
+    try:
+        engine_thread = threading.Thread(target=strategy_main, daemon=True)
+        engine_thread.start()
+        
+        push_thread = threading.Thread(target=auto_push_main, daemon=True)
+        push_thread.start()
+    except Exception as e:
+        print(f"[!] Failed to start Background Engines: {e}")
+
 # ─── Main ───
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     print(f"\n>>> AMATS Dashboard running at http://localhost:{port}\n")
-    
-    # Start the Strategy Engine in a background thread
-    print(">>> Starting Strategy Engine (Background Thread)...")
-    try:
-        from strategy_engine import main as strategy_main
-        engine_thread = threading.Thread(target=strategy_main, daemon=True)
-        engine_thread.start()
-    except Exception as e:
-        print(f"[!] Failed to start Strategy Engine: {e}")
-
-    # Start the Auto-Push script in a background thread
-    print(">>> Starting Auto-Push Sync (Background Thread)...")
-    try:
-        from auto_push import main as auto_push_main
-        push_thread = threading.Thread(target=auto_push_main, daemon=True)
-        push_thread.start()
-    except Exception as e:
-        print(f"[!] Failed to start Auto-Push: {e}")
-
-    # Run Flask App
     app.run(host="0.0.0.0", port=port, debug=False)

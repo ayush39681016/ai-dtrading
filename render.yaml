@@ -1,22 +1,9 @@
 services:
   - type: web
-    name: amats-dashboard
+    name: amats-trading
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
-    envVars:
-      - key: BYBIT_API_KEY
-        sync: false
-      - key: BYBIT_API_SECRET
-        sync: false
-      - key: PYTHON_VERSION
-        value: 3.11.0
-
-  - type: worker
-    name: amats-strategy-engine
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python -u strategy_engine.py
+    startCommand: python app.py
     envVars:
       - key: BYBIT_API_KEY
         sync: false

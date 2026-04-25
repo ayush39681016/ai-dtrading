@@ -117,7 +117,7 @@
   },
   "runtime": {
     "risk_profile": "Balanced",
-    "exchange_mode": "testnet",
+    "exchange_mode": "demo",
     "fail_safe_mode": "A_hard_stop",
     "risk_per_trade_pct": 0.005,
     "fee_bps": 5.0,
